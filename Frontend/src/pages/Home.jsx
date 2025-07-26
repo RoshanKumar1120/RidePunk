@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import 'remixicon/fonts/remixicon.css';
+
 import LocationSearchPanel from '../components/LocationSearchPanel';
 import VehiclePanel from '../components/VehiclePanel';
 import ConfirmRide from '../components/ConfirmRide';
@@ -14,107 +15,63 @@ const Home = () => {
     const [panelOpen, setPanelOpen] = useState(false);
     const [vehiclePanel, setVehiclePanel] = useState(false);
     const [activeField, setActiveField] = useState('');
-    const [ConfirmRidePanel,setConfirmRidePanel]=useState(false)
-    const [vehicleFound,setVehicleFound]=useState(false)
-    const [ waitingForDriver, setWaitingForDriver ] = useState(false)
-
+    const [ConfirmRidePanel, setConfirmRidePanel] = useState(false);
+    const [vehicleFound, setVehicleFound] = useState(false);
+    const [waitingForDriver, setWaitingForDriver] = useState(false);
 
     const panelRef = useRef(null);
     const panelCloseRef = useRef(null);
     const vehiclePanelRef = useRef(null);
-    const ConfirmRidePanelRef=useRef(null);
+    const ConfirmRidePanelRef = useRef(null);
     const vehicleFoundRef = useRef(null);
-    const WaitingForDriverRef=useRef(null)
+    const waitingForDriverRef = useRef(null);
 
     const submitHandler = (e) => {
         e.preventDefault();
     };
 
-    // Animate the location panel (top slide)
+    // Animate location search panel
     useGSAP(() => {
-        if (panelOpen) {
-            gsap.to(panelRef.current, {
-                height: '70%',
-                padding: 24,
-                duration: 0.3,
-                ease: 'power2.out'
-            });
-
-            gsap.to(panelCloseRef.current, {
-                opacity: 1
-            });
-        } else {
-            gsap.to(panelRef.current, {
-                height: '0%',
-                padding: 0,
-                duration: 0.3,
-                ease: 'power2.inOut'
-            });
-            gsap.to(panelCloseRef.current, {
-                opacity: 0
-            });
-        }
+        gsap.to(panelRef.current, {
+            height: panelOpen ? '70%' : '0%',
+            padding: panelOpen ? 24 : 0
+        });
+        gsap.to(panelCloseRef.current, {
+            opacity: panelOpen ? 1 : 0
+        });
     }, [panelOpen]);
 
-    // // Set initial off-screen position
-    // useEffect(() => {
-    //     gsap.set(vehiclePanelRef.current, { y: '100%' });
-    // }, []);
-
-    // Animate vehicle panel (bottom sheet)
-    useGSAP(function(){
-        if (vehiclePanel) {
-            gsap.to(vehiclePanelRef.current, {
-               transform:'translateY(0)'               
-            })
-        } else {
-            gsap.to(vehiclePanelRef.current, {
-               transform:'translate(100%)'
-            })
-        }
+    // Animate vehicle panel
+    useGSAP(() => {
+        gsap.to(vehiclePanelRef.current, {
+            transform: vehiclePanel ? 'translateY(0)' : 'translateY(100%)'
+        });
     }, [vehiclePanel]);
 
-     useGSAP(function(){
-        if (ConfirmRidePanel) {
-            gsap.to(ConfirmRidePanelRef.current, {
-               transform:'translateY(0)'               
-            })
-        } else {
-            gsap.to(ConfirmRidePanelRef.current, {
-               transform:'translate(100%)'
-            })
-        }
+    // Animate confirm ride panel
+    useGSAP(() => {
+        gsap.to(ConfirmRidePanelRef.current, {
+            transform: ConfirmRidePanel ? 'translateY(0)' : 'translateY(100%)'
+        });
     }, [ConfirmRidePanel]);
 
-     useGSAP(function(){
-        if (vehicleFound) {
-            gsap.to(vehicleFoundRef.current, {
-               transform:'translateY(0)'               
-            })
-        } else {
-            gsap.to(vehicleFoundRef.current, {
-               transform:'translate(100%)'
-            })
-        }
+    // Animate looking for driver
+    useGSAP(() => {
+        gsap.to(vehicleFoundRef.current, {
+            transform: vehicleFound ? 'translateY(0)' : 'translateY(100%)'
+        });
     }, [vehicleFound]);
 
-      useGSAP(function(){
-        if (WaitingForDriver) {
-            gsap.to(WaitingForDriverRef.current, {
-               transform:'translateY(0)'               
-            })
-        } else {
-            gsap.to(vehicleFoundRef.current, {
-               transform:'translate(100%)'
-            })
-        }
-    }, [WaitingForDriver]);
-
-   
+    // Animate waiting for driver
+    useGSAP(() => {
+        gsap.to(waitingForDriverRef.current, {
+            transform: waitingForDriver ? 'translateY(0)' : 'translateY(100%)'
+        });
+    }, [waitingForDriver]);
 
     return (
         <div className='h-screen relative overflow-hidden'>
-            {/* Uber logo */}
+            {/* Logo */}
             <img
                 className='w-16 absolute left-5 top-5'
                 src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png"
@@ -130,7 +87,7 @@ const Home = () => {
                 />
             </div>
 
-            {/* Form & Panel */}
+            {/* Form and top panel */}
             <div className='flex flex-col justify-end h-screen absolute top-0 w-full'>
                 <div className='h-[30%] p-6 bg-white relative'>
                     <h5
@@ -168,42 +125,59 @@ const Home = () => {
                         />
                     </form>
                     <button
-                        onClick={() => setVehiclePanel(true)} // Trigger open
+                        onClick={() => setVehiclePanel(true)}
                         className='bg-black text-white px-4 py-2 rounded-lg mt-3 w-full'
                     >
                         Find Trip
                     </button>
                 </div>
 
-                {/* Search Panel */}
+                {/* Location Search Panel */}
                 <div ref={panelRef} className='bg-white h-0'>
-                    <LocationSearchPanel  setPanelOpen={setPanelOpen} setVehiclePanel={setVehiclePanel} />
+                    <LocationSearchPanel
+                        setPanelOpen={setPanelOpen}
+                        setVehiclePanel={setVehiclePanel}
+                    />
                 </div>
             </div>
 
-            {/* Vehicle Panel */}
+            {/* Bottom Panels */}
             <div
                 ref={vehiclePanelRef}
                 className='fixed w-full z-10 bg-white bottom-0 px-3 py-8'
             >
-                <VehiclePanel setConfirmRidePanel={setConfirmRidePanel} setVehiclePanel={setVehiclePanel}/>
+                <VehiclePanel
+                    setConfirmRidePanel={setConfirmRidePanel}
+                    setVehiclePanel={setVehiclePanel}
+                />
             </div>
 
             <div
-                ref={ConfirmRidePanelRef} className='fixed w-full z-10 bg-white bottom-0 px-3 py-8'> 
-                <ConfirmRide setConfirmRidePanel={setConfirmRidePanel} setVehicleFound={setVehicleFound}/>
+                ref={ConfirmRidePanelRef}
+                className='fixed w-full z-10 bg-white bottom-0 px-3 py-8'
+            >
+                <ConfirmRide
+                    setConfirmRidePanel={setConfirmRidePanel}
+                    setVehicleFound={setVehicleFound}
+                />
             </div>
-            
+
             <div
-                ref={vehicleFoundRef} className='fixed w-full z-10 bottom-0 bg-white px-3 py-8 '> 
-                <LookingForDriver setVehicleFound={setVehicleFound}/>
+                ref={vehicleFoundRef}
+                className='fixed w-full z-20 bottom-0 bg-white px-3 py-8'
+            >
+                <LookingForDriver
+                    setVehicleFound={setVehicleFound}
+                    setWaitingForDriver={setWaitingForDriver}
+                />
             </div>
 
-             <div ref={WaitingForDriverRef}
-                 className='fixed w-full z-10 bottom-0 bg-white px-3 py-8 '> 
-                <WaitingForDriver WaitingForDriver={WaitingForDriver} />
+            <div
+                ref={waitingForDriverRef}
+                className='fixed w-full z-30 bottom-0 bg-white px-3 py-8'
+            >
+                <WaitingForDriver setWaitingForDriver={setWaitingForDriver} />
             </div>
-
         </div>
     );
 };
