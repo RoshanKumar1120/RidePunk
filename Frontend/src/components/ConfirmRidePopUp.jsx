@@ -1,14 +1,34 @@
 import React, { useState } from 'react'
 import { Link } from "react-router-dom";
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios';
 
-const ConfirmRidePopUp=(props)=>{
-const [ otp, setOtp ] = useState('')
-    const submitHandler=(e)=>{
-        e.preventDefault()
-    }
+const ConfirmRidePopUp = (props) => {
+  const [otp, setOtp] = useState('')
 
-    return(
-           <div>
+   const navigate = useNavigate()
+   
+  const submitHandler = async (e) => {
+    e.preventDefault()
+    const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/rides/start-ride`, {
+            params: {
+                rideId: props.ride._id,
+                otp: otp
+            },
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        })
+
+        if (response.status === 200) {
+            props.setConfirmRidePopupPanel(false)
+            props.setRidePopupPanel(false)
+            navigate('/captain-riding', { state: { ride: props.ride } })
+        }
+  }
+
+  return (
+    <div>
       <h5
         className="p-1 text-center w-[94%] absolute top-0"
         onClick={() => {
@@ -27,7 +47,7 @@ const [ otp, setOtp ] = useState('')
             src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmFuZG9tJTIwcGVvcGxlfGVufDB8fDB8fHww"
             alt=""
           />
-          <h2 className="text-xl font-medium">Harsh Patel</h2>
+          <h2 className="text-xl font-medium">{props.ride?.user.fullname.firstname}</h2>
         </div>
         <h5 className="text-lg font-semibold">2.2 KM</h5>
       </div>
@@ -39,7 +59,7 @@ const [ otp, setOtp ] = useState('')
             <div>
               <h3 className="text-lg font-medium">562/11-A</h3>
               <p className="text-sm -mt-1 text-gray-600">
-                New Bridge Kurukshetra
+                {props.ride?.pickup}
               </p>
             </div>
           </div>
@@ -49,7 +69,7 @@ const [ otp, setOtp ] = useState('')
             <div>
               <h3 className="text-lg font-medium">562/11-A</h3>
               <p className="text-sm -mt-1 text-gray-600">
-                New Bridge Kurukshetra
+                {props.ride?.destination}
               </p>
             </div>
           </div>
@@ -57,33 +77,29 @@ const [ otp, setOtp ] = useState('')
           <div className="flex items-center gap-5 p-3 border-b-2">
             <i className="ri-currency-line"></i>
             <div>
-              <h3 className="text-lg font-medium">$193.20</h3>
+              <h3 className="text-lg font-medium">₹{props.ride?.fare} </h3>
               <p className="text-sm -mt-1 text-gray-600">Cash Cash</p>
             </div>
           </div>
         </div>
 
-        
 
-       <div className="mt-6 w-full">
-  <form onSubmit={()=>{
-    submitHandler(e);
-  }}>
-    <input value={otp} onChange={(e)=>setOtp(e.target.value)} type="text" className='bg-[#eee] px-8 py-4 text-lg font-mono rounded-lg w-full mt-3' placeholder="Enter your OTP"/>
-           <Link to='/captain-riding' className="w-full mt-5 flex justify-center bg-green-400  text-lg  text-white font-semibold p-2 rounded-lg">
-          Confirm
-        </Link>
 
-         <button onClick={() => {
-         props.setConfirmRidePopupPanel(false)
-          props.setRidePopupPanel(false)
+        <div className="mt-6 w-full">
+          <form onSubmit={submitHandler}>
+            <input value={otp} onChange={(e) => setOtp(e.target.value)} type="text" className='bg-[#eee] px-8 py-4 text-lg font-mono rounded-lg w-full mt-3' placeholder="Enter your OTP" />
+            <button className='w-full mt-5 text-lg flex justify-center bg-green-600 text-white font-semibold p-3 rounded-lg'>Confirm</button>
+            <button onClick={() => {
+              props.setConfirmRidePopupPanel(false)
+              props.setRidePopupPanel(false)
 
-      }} className='mt-2 w-full bg-red-500 text-white text-lg font-semibold p-2 px-10 rounded-lg'>Cancel</button>
-  </form>
-       </div>
+            }} className='w-full mt-2 bg-red-600 text-lg text-white font-semibold p-3 rounded-lg'>Cancel</button>
+
+          </form>
+        </div>
       </div>
     </div>
-    )
+  )
 }
 
 export default ConfirmRidePopUp

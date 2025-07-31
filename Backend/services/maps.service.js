@@ -1,5 +1,5 @@
 const axios = require('axios');
-
+const captainModel = require('../models/captain.model');
 module.exports.getAddressCoordinate = async (address) => {
     const apiKey = process.env.GOMAPS_API_KEY; // Make sure this is your GoMaps.pro API key
     const url = `https://maps.gomaps.pro/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${apiKey}`;
@@ -72,4 +72,21 @@ module.exports.getAutoCompleteSuggestions = async (input) => {
         console.error(err);
         throw err;
     }
+}
+module.exports.getCaptainsInTheRadius = async (ltd, lng, radius) => {
+
+    // radius in km
+
+
+    const captains = await captainModel.find({
+        location: {
+            $geoWithin: {
+                $centerSphere: [ [ ltd, lng ], radius / 6371 ]
+            }
+        }
+    });
+
+    return captains;
+
+
 }
