@@ -35,7 +35,7 @@ const submithandler=async(e)=>{
   return (
     <div className='p-7 h-screen flex flex-col justify-between'>
         <div>
-        <img className='w-16 mb-10' src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png" alt=""/>
+        <img className='w-16 mb-10' src="" alt=""/>
         <form onSubmit={(e)=>{
             submithandler(e)
         }}>

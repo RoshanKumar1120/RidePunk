@@ -159,11 +159,11 @@ const Home = () => {
     return (
         <div className='h-screen relative overflow-hidden'>
             {/* Logo */}
-            <img
+            {/* <img
                 className='w-16 absolute left-5 top-5'
                 src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png"
                 alt="Uber Logo"
-            />
+            /> */}
 
             {/* Background */}
             <div className="h-full w-full">

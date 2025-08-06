@@ -27,11 +27,11 @@ const CaptainRiding = () => {
     <div className="h-screen flex flex-col relative">
       {/* Header */}
       <div className="fixed top-0 left-0 w-full z-10 p-3 flex items-center justify-between bg-white shadow">
-        <img
+        {/* <img
           className="w-16"
           src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png"
           alt="Uber Logo"
-        />
+        /> */}
         <Link
           to="/captain-home"
           className="h-10 w-10 bg-black text-white flex items-center justify-center rounded-full"
